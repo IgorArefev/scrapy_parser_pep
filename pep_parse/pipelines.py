@@ -20,7 +20,8 @@ class PepParsePipeline:
         self.time = dt.now().strftime(TIME_FORMAT)
         results_dir = BASE_DIR / RESULTS_DIR
         file_path = results_dir / FILENAME.format(self.time)
-        file = csv.writer(open(file_path, 'w'))
-        file.writerow(['Статус', 'Количество'])
-        self.counter['Total'] = sum(self.counter.values())
-        file.writerows(self.counter.items())
+        with open(file_path, 'w') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Статус', 'Количество'])
+            self.counter['Total'] = sum(self.counter.values())
+            writer.writerows(self.counter.items())
