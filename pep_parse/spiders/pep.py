@@ -10,13 +10,15 @@ class PepSpider(scrapy.Spider):
     start_urls = ['https://peps.python.org/']
 
     def parse(self, response):
-        """Все ссылки на документы PEP"""
+        """Все ссылки на документы PEP."""
         peps = response.css('section#numerical-index td a::attr(href)')
         for pep_link in peps:
-            yield response.follow(pep_link, callback=self.parse_pep)
+            yield response.follow(
+                f'{pep_link.get()}/', callback=self.parse_pep
+            )
 
     def parse_pep(self, response):
-        """Собирает номер, название и статус PEP"""
+        """Собирает номер, название и статус PEP."""
         page_title = response.css('h1.page-title::text').get()
         number, name = re.search(PATTERN, page_title).groups()
         status = (
